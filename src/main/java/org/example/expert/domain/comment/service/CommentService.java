@@ -39,24 +39,24 @@ public class CommentService {
         );
 
         Comment savedComment = commentRepository.save(newComment);
-
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
         return new CommentSaveResponse(
                 savedComment.getId(),
                 savedComment.getContents(),
-                new UserResponse(user.getId(), user.getEmail())
+                new UserResponse(user.getId(), user.getNickName(), user.getEmail())
         );
     }
 
     public List<CommentResponse> getComments(long todoId) {
         List<Comment> commentList = commentRepository.findByTodoIdWithUser(todoId);
-
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
         List<CommentResponse> dtoList = new ArrayList<>();
         for (Comment comment : commentList) {
             User user = comment.getUser();
             CommentResponse dto = new CommentResponse(
                     comment.getId(),
                     comment.getContents(),
-                    new UserResponse(user.getId(), user.getEmail())
+                    new UserResponse(user.getId(), user.getNickName(), user.getEmail())
             );
             dtoList.add(dto);
         }

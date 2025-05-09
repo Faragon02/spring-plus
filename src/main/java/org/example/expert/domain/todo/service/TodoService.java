@@ -39,13 +39,13 @@ public class TodoService {
                 user
         );
         Todo savedTodo = todoRepository.save(newTodo);
-
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
         return new TodoSaveResponse(
                 savedTodo.getId(),
                 savedTodo.getTitle(),
                 savedTodo.getContents(),
                 weather,
-                new UserResponse(user.getId(), user.getEmail())
+                new UserResponse(user.getId(), user.getNickName(), user.getEmail())
         );
     }
 
@@ -53,13 +53,13 @@ public class TodoService {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         Page<Todo> todos = todoRepository.findAllByOrderByModifiedAtDesc(pageable);
-
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
                 todo.getTitle(),
                 todo.getContents(),
                 todo.getWeather(),
-                new UserResponse(todo.getUser().getId(), todo.getUser().getEmail()),
+                new UserResponse(todo.getUser().getId(),todo.getUser().getNickName(), todo.getUser().getEmail()),
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         ));
@@ -70,13 +70,13 @@ public class TodoService {
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
         User user = todo.getUser();
-
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
         return new TodoResponse(
                 todo.getId(),
                 todo.getTitle(),
                 todo.getContents(),
                 todo.getWeather(),
-                new UserResponse(user.getId(), user.getEmail()),
+                new UserResponse(user.getId(), user.getNickName(), user.getEmail()),
                 todo.getCreatedAt(),
                 todo.getModifiedAt()
         );

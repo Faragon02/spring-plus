@@ -34,8 +34,9 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
         UserRole userRole = UserRole.of(signupRequest.getUserRole());
-
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
         User newUser = new User(
+                signupRequest.getNickname(),
                 signupRequest.getEmail(),
                 encodedPassword,
                 userRole

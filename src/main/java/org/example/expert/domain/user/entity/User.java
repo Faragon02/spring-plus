@@ -15,13 +15,16 @@ public class User extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nickName;
     @Column(unique = true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    public User(String email, String password, UserRole userRole) {
+    //lv1-2코드추가퀴즈-JWT의 이해
+    public User(String email, String nickname, String password, UserRole userRole) {
+        this.nickName= nickname;
         this.email = email;
         this.password = password;
         this.userRole = userRole;
