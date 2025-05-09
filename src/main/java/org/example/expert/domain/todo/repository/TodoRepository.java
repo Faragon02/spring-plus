@@ -5,11 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
+
 //lv1-3 코드 개선 퀴즈 -  JPA의 이해
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
@@ -23,10 +27,16 @@ AND (
 )
 ORDER BY t.modifiedAt DESC
 """)
-    Page<Todo> findAllByOrderByModifiedAtDesc(@Param("weather")String weather, @Param("start") LocalDateTime start, @Param("end")LocalDateTime end, Pageable pageable);
+    Page<Todo> searchTodo(@Param("weather")String weather, @Param("start") LocalDateTime start, @Param("end")LocalDateTime end, Pageable pageable);
 
     @Query("SELECT t FROM Todo t " +
             "LEFT JOIN t.user " +
             "WHERE t.id = :todoId")
     Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
+
+    //TestCode 날짜 수정외에 사용 금지.
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Todos SET modified_at = :modifiedAt WHERE id = :id", nativeQuery = true)
+    void updateModifiedAt(@Param("id") Long id, @Param("modifiedAt") LocalDateTime modifiedAt);
 }
