@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,19 +48,18 @@ public class CommentService {
         );
     }
 
+    //lv2-7 N+1
     public List<CommentResponse> getComments(long todoId) {
         List<Comment> commentList = commentRepository.findByTodoIdWithUser(todoId);
         //lv1-2 코드 추가 퀴즈 - JWT의 이해
-        List<CommentResponse> dtoList = new ArrayList<>();
-        for (Comment comment : commentList) {
+        List<CommentResponse> dtoList = commentList.stream().map(comment -> {
             User user = comment.getUser();
-            CommentResponse dto = new CommentResponse(
-                    comment.getId(),
-                    comment.getContents(),
-                    new UserResponse(user.getId(), user.getNickName(), user.getEmail())
+            return new CommentResponse(
+                comment.getId(),
+                comment.getContents(),
+                new UserResponse(user.getId(), user.getNickName(), user.getEmail())
             );
-            dtoList.add(dto);
-        }
+        }).collect(Collectors.toList());
         return dtoList;
     }
 }
