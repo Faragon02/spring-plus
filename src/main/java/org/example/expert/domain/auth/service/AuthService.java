@@ -42,8 +42,8 @@ public class AuthService {
                 userRole
         );
         User savedUser = userRepository.save(newUser);
-
-        String bearerToken = jwtUtil.createToken(savedUser.getId(), savedUser.getEmail(), userRole);
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
+        String bearerToken = jwtUtil.createToken(savedUser.getId(),savedUser.getNickName(), savedUser.getEmail(), userRole);
 
         return new SignupResponse(bearerToken);
     }
@@ -56,8 +56,8 @@ public class AuthService {
         if (!passwordEncoder.matches(signinRequest.getPassword(), user.getPassword())) {
             throw new AuthException("잘못된 비밀번호입니다.");
         }
-
-        String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
+        //lv1-2 코드 추가 퀴즈 - JWT의 이해
+        String bearerToken = jwtUtil.createToken(user.getId(), user.getNickName(), user.getEmail(), user.getUserRole());
 
         return new SigninResponse(bearerToken);
     }

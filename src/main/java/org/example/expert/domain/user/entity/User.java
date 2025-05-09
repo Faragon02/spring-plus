@@ -23,7 +23,7 @@ public class User extends Timestamped {
     private UserRole userRole;
 
     //lv1-2코드추가퀴즈-JWT의 이해
-    public User(String email, String nickname, String password, UserRole userRole) {
+    public User(String nickname, String email,  String password, UserRole userRole) {
         this.nickName= nickname;
         this.email = email;
         this.password = password;
