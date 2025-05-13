@@ -15,7 +15,7 @@ import java.util.Optional;
 import jakarta.transaction.Transactional;
 
 //lv1-3 코드 개선 퀴즈 -  JPA의 이해
-public interface TodoRepository extends JpaRepository<Todo, Long> {
+public interface TodoRepository extends JpaRepository <Todo, Long>,TodoRepositoryCustom {
 
     @EntityGraph(attributePaths = {"user"})
     @Query("""
@@ -29,10 +29,7 @@ ORDER BY t.modifiedAt DESC
 """)
     Page<Todo> searchTodo(@Param("weather")String weather, @Param("start") LocalDateTime start, @Param("end")LocalDateTime end, Pageable pageable);
 
-    @Query("SELECT t FROM Todo t " +
-            "LEFT JOIN t.user " +
-            "WHERE t.id = :todoId")
-    Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
+
 
     //TestCode 날짜 수정외에 사용 금지.
     @Modifying
