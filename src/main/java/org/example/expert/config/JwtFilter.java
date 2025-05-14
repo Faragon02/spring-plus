@@ -10,7 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.example.expert.domain.common.exception.NotFoundException;
+import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
+import org.example.expert.domain.user.repository.UserRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 
@@ -19,6 +25,7 @@ import java.io.IOException;
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -57,9 +64,22 @@ public class JwtFilter implements Filter {
 
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-            httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
-            httpRequest.setAttribute("email", claims.get("email"));
-            httpRequest.setAttribute("userRole", claims.get("userRole"));
+            // httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
+            // httpRequest.setAttribute("email", claims.get("email"));
+            // httpRequest.setAttribute("userRole", claims.get("userRole"));
+
+            Long userId = Long.parseLong(claims.getId());
+            //유저 재확인.
+            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다."));
+
+            if (user != null) {
+                CustomUserDetails userDetails = new CustomUserDetails(user);
+                // 인증 객체 생성 후 SecurityContext에 등록
+                UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
 
             if (url.startsWith("/admin")) {
                 // 관리자 권한이 없는 경우 403을 반환합니다.
