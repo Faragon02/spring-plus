@@ -67,7 +67,7 @@ public class TodoService {
         ));
     }
     //lv2-8 QueryDSL
-    public TodoResponse getTodo(long todoId) {
+    public TodoResponse getTodo(Long todoId) {
         Todo todo = todoRepository.findByIdWithUser(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 

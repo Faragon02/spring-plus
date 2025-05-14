@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ import java.util.Optional;
 import jakarta.transaction.Transactional;
 
 //lv1-3 코드 개선 퀴즈 -  JPA의 이해
-public interface TodoRepository extends JpaRepository <Todo, Long>,TodoRepositoryCustom {
+public interface TodoRepository extends QuerydslPredicateExecutor<Todo>,JpaRepository <Todo, Long>,TodoRepositoryCustom {
 
     @EntityGraph(attributePaths = {"user"})
     @Query("""

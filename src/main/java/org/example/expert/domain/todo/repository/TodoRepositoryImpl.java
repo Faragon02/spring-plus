@@ -7,13 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.expert.domain.todo.entity.QTodo;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.user.entity.QUser;
-import org.springframework.stereotype.Repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-@Repository
 @RequiredArgsConstructor
-public class TodoRepositortImple implements TodoRepositoryCustom{
-	private JPAQueryFactory jpaQueryFactory;
+public class TodoRepositoryImpl implements TodoRepositoryCustom{
+
+	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
 	public Optional<Todo> findByIdWithUser(Long todoId) {
