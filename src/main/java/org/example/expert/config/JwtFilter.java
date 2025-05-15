@@ -69,8 +69,7 @@ public class JwtFilter implements Filter {
             // httpRequest.setAttribute("email", claims.get("email"));
             // httpRequest.setAttribute("userRole", claims.get("userRole"));
 
-            Long userId = Long.parseLong(claims.getId());
-            //유저 재확인.
+            // Lv2-9 Security Filter
             CustomUserDetails userDetails = new CustomUserDetails(claims);
             // 인증 객체 생성 후 SecurityContext에 등록
             UsernamePasswordAuthenticationToken authentication =

@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+	// Lv2-9 Security Filter
 	private final JwtUtil jwtUtil;
 
 	@Bean

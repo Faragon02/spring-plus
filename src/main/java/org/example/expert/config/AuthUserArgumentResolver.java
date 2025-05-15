@@ -38,6 +38,8 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             @Nullable WebDataBinderFactory binderFactory
     ) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+
+        // Lv2-9 Security Filter
         CustomUserDetails customUserDetails = null;
         Object pricipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
          if(pricipal instanceof UserDetails){
@@ -55,6 +57,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             .map(UserRole::valueOf)
             .findFirst()
             .orElse(null);
+
         return new AuthUser(userId, email, userRole);
     }
 }
