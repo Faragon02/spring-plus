@@ -1,5 +1,8 @@
 package org.example.expert.config;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ClaimsMutator;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -9,25 +12,29 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
-	private final User user;
+	private final Claims claims;
 
-	public CustomUserDetails(User user){
-		this.user = user;
+	public CustomUserDetails(Claims claims){
+		this.claims =claims;
 	}
+	public Long getId(){
+		return Long.parseLong(claims.getSubject());
+	}
+
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole()));
+		return List.of(new SimpleGrantedAuthority("ROLE_" + claims.get("userRole").toString()));
 	}
 
 	@Override
 	public String getPassword() {
-		return user.getPassword();
+		return  claims.get("password").toString();
 	}
 
 	@Override
 	public String getUsername() {
-		return user.getEmail();
+		return claims.get("email").toString();
 	}
 
 	@Override

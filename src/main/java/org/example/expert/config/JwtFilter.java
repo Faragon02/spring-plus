@@ -15,6 +15,7 @@ import org.example.expert.domain.common.exception.NotFoundException;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.enums.UserRole;
 import org.example.expert.domain.user.repository.UserRepository;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -70,15 +71,11 @@ public class JwtFilter implements Filter {
 
             Long userId = Long.parseLong(claims.getId());
             //유저 재확인.
-            User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다."));
-
-            if (user != null) {
-                CustomUserDetails userDetails = new CustomUserDetails(user);
-                // 인증 객체 생성 후 SecurityContext에 등록
-                UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            CustomUserDetails userDetails = new CustomUserDetails(claims);
+            // 인증 객체 생성 후 SecurityContext에 등록
+            UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
             if (url.startsWith("/admin")) {
@@ -87,6 +84,7 @@ public class JwtFilter implements Filter {
                     httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
                     return;
                 }
+
                 chain.doFilter(request, response);
                 return;
             }

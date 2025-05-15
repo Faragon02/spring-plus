@@ -7,6 +7,9 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.enums.UserRole;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -35,12 +38,23 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             @Nullable WebDataBinderFactory binderFactory
     ) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-
+        CustomUserDetails customUserDetails = null;
+        Object pricipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+         if(pricipal instanceof UserDetails){
+             customUserDetails = (CustomUserDetails)pricipal;
+         }
+         if(customUserDetails == null){
+             throw new AuthException("유저 정보가 존재하지 않습니다.");
+         }
         // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴
-        Long userId = (Long) request.getAttribute("userId");
-        String email = (String) request.getAttribute("email");
-        UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
-
+        Long userId = customUserDetails.getId();
+        String email = customUserDetails.getUsername();
+        UserRole userRole =customUserDetails.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .map(role->role.replace("Role",""))
+            .map(UserRole::valueOf)
+            .findFirst()
+            .orElse(null);
         return new AuthUser(userId, email, userRole);
     }
 }
