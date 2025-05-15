@@ -62,12 +62,7 @@ public class JwtFilter implements Filter {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
                 return;
             }
-
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
-
-            // httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
-            // httpRequest.setAttribute("email", claims.get("email"));
-            // httpRequest.setAttribute("userRole", claims.get("userRole"));
 
             // Lv2-9 Security Filter
             CustomUserDetails userDetails = new CustomUserDetails(claims);
@@ -86,7 +81,6 @@ public class JwtFilter implements Filter {
                 chain.doFilter(request, response);
                 return;
             }
-
             chain.doFilter(request, response);
         } catch (SecurityException | MalformedJwtException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);

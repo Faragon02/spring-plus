@@ -12,29 +12,34 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class CustomUserDetails implements UserDetails {
-	private final Claims claims;
+	private final Long id;
+	private final String userRole;
+	private final String username;
 
 	public CustomUserDetails(Claims claims){
-		this.claims =claims;
+		this.id = Long.parseLong(claims.getSubject());
+		this.userRole =claims.get("userRole").toString();
+		this.username = claims.get("email").toString();
+
 	}
 	public Long getId(){
-		return Long.parseLong(claims.getSubject());
+		return id;
 	}
 
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority("ROLE_" + claims.get("userRole").toString()));
+		return List.of(new SimpleGrantedAuthority("ROLE_" + userRole ));
 	}
 
 	@Override
 	public String getPassword() {
-		return  claims.get("password").toString();
+		return  null;
 	}
 
 	@Override
 	public String getUsername() {
-		return claims.get("email").toString();
+		return  username;
 	}
 
 	@Override

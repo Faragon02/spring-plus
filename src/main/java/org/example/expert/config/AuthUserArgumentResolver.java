@@ -51,13 +51,13 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         // JwtFilter 에서 set 한 userId, email, userRole 값을 가져옴
         Long userId = customUserDetails.getId();
         String email = customUserDetails.getUsername();
+
         UserRole userRole =customUserDetails.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
-            .map(role->role.replace("Role",""))
+            .map(role->role.replace("ROLE_","").trim())
             .map(UserRole::valueOf)
             .findFirst()
             .orElse(null);
-
         return new AuthUser(userId, email, userRole);
     }
 }
